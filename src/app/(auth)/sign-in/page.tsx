@@ -12,7 +12,7 @@ const page: FC = () => {
                 <Link
                     href='/'
                     className={cn(
-                        buttonVariants({ variant: 'ghost' }),
+                        buttonVariants({ variant: 'subtle' }),
                         'self-start -mt-20'
                     )}>
                     <ChevronLeft className='w-4 h-4 mr-2' />
