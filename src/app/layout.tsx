@@ -23,7 +23,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Navbar />
         {authModal}
-        {children}
+        <div className='container h-full pt-20 mx-auto max-w-7xl'>
+          {children}
+        </div>
         <Toaster />
       </body>
     </html>
