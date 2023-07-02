@@ -19,8 +19,8 @@ export default function Home() {
           <div className='px-6 pb-4 -my-3 text-sm leading-6 divide-y divide-gray-100'>
             <div className='flex justify-between py-3 gap-x-4'>
               <p className='text-zinc-500'>
-                Your personal Breadit frontpage. Come here to check in with your
-                favorite communities.
+                Your personal frontpage. Come here to check in with your
+                favorite huddl.
               </p>
             </div>
 

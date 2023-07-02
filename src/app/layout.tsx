@@ -1,3 +1,4 @@
+import Providers from '@/components/Providers'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import { Toaster } from '@/components/ui/toaster'
@@ -21,11 +22,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        {authModal}
-        <div className='container h-full pt-20 mx-auto max-w-7xl'>
-          {children}
-        </div>
+        <Providers>
+          <Navbar />
+          {authModal}
+          <div className='container h-full pt-20 mx-auto max-w-7xl'>
+            {children}
+          </div>
+        </Providers>
         <Toaster />
       </body>
     </html>

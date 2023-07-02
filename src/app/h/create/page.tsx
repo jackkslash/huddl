@@ -2,12 +2,56 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { toast } from '@/hooks/use-toast'
+import { createHuddlPayload } from '@/lib/validators/huddl'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const Page = () => {
     const [input, setInput] = useState<string>('')
     const router = useRouter()
+
+    const { mutate: createHuddl, isLoading } = useMutation({
+        mutationFn: async () => {
+            const payload: createHuddlPayload = {
+                name: input,
+            }
+
+            const { data } = await axios.post('/api/huddl', payload)
+            console.log(data)
+            return data as string
+
+        },
+        onError: (err: any) => {
+            if (err.response?.status === 409) {
+                return toast({
+                    title: 'Huddl already exists.',
+                    description: 'Please choose a different name.',
+                    variant: 'destructive',
+                })
+            }
+            if (err.response?.status === 422) {
+                return toast({
+                    title: 'Invalid huddl name.',
+                    description: 'Please choose a name between 3 and 21 letters.',
+                    variant: 'destructive',
+                })
+            }
+
+            toast({
+                title: 'There was an error.',
+                description: 'Could not create huddl.',
+                variant: 'destructive',
+            })
+        },
+        onSuccess: (data) => {
+            router.push(`/h/${data}`)
+        },
+    })
+
+
     return (
         <div className='container flex items-center h-full max-w-3xl mx-auto'>
             <div className='relative w-full p-4 space-y-6 rounded-lg h-fit'>
@@ -31,11 +75,14 @@ const Page = () => {
                 </div>
                 <div className='flex justify-end gap-4'>
                     <Button
+                        isLoading={isLoading}
                         variant='subtle'
                         onClick={() => router.back()}>
                         Cancel
                     </Button>
-                    <Button>
+                    <Button
+                        isLoading={isLoading}
+                        onClick={() => createHuddl()}>
                         Create Community
                     </Button>
                 </div>

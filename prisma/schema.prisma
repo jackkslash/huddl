@@ -50,13 +50,14 @@ model User {
   subscriptions Subscription[]
   votes         Vote[]
 
+  username String? @unique
+
   image       String?
   accounts    Account[]
   sessions    Session[]
   Post        Post[]
   Comment     Comment[]
   CommentVote CommentVote[]
-  Huddl       Huddl[]
 }
 
 model Huddl {
@@ -69,12 +70,9 @@ model Huddl {
   creatorId   String?
   creator     User?          @relation("CreatedBy", fields: [creatorId], references: [id])
   subscribers Subscription[]
-  User        User?          @relation(fields: [userId], references: [id])
-  userId      String?
 
   @@index([name])
   @@index([creatorId])
-  @@index([userId])
 }
 
 model Subscription {
