@@ -5,7 +5,7 @@ export const huddlValidator = z.object({
 });
 
 export const huddlSubscriptionValidator = z.object({
-  subredditId: z.string(),
+  huddlId: z.string(),
 });
 
 export type createHuddlPayload = z.infer<typeof huddlValidator>;

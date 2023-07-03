@@ -90,7 +90,7 @@ const Layout = async ({
                             ) : null}
 
                             {huddl.creatorId !== session?.user?.id ? (
-                                <SubscribeLeaveToggle />
+                                <SubscribeLeaveToggle isSubscribed={isSubscribed} huddlId={huddl.id} huddlName={huddl.name} />
                             ) : null}
                         </dl>
                     </div>
