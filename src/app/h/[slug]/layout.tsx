@@ -66,7 +66,7 @@ const Layout = async ({
                     {/* info sidebar */}
                     <div className='order-first overflow-hidden border border-gray-200 rounded-lg h-fit md:order-last'>
                         <div className='px-6 py-4'>
-                            <p className='py-3 font-semibold'>About r/{huddl.name}</p>
+                            <p className='py-3 font-semibold'>About h/{huddl.name}</p>
                         </div>
                         <dl className='px-6 py-4 text-sm leading-6 bg-white divide-y divide-gray-100'>
                             <div className='flex justify-between py-3 gap-x-4'>
