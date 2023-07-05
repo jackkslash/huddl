@@ -1,9 +1,10 @@
-
 import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
+import { buttonVariants } from '@/components/ui/button'
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { format } from 'date-fns'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ReactNode } from 'react'
 
@@ -19,7 +20,6 @@ const Layout = async ({
     params: { slug: string }
 }) => {
     const session = await getAuthSession()
-
     const huddl = await db.huddl.findFirst({
         where: { name: slug },
         include: {
@@ -92,6 +92,10 @@ const Layout = async ({
                             {huddl.creatorId !== session?.user?.id ? (
                                 <SubscribeLeaveToggle isSubscribed={isSubscribed} huddlId={huddl.id} huddlName={huddl.name} />
                             ) : null}
+
+                            <Link className={buttonVariants({
+                                className: 'w-full mb-6'
+                            })} href={`${slug}/submit`}>Post</Link>
                         </dl>
                     </div>
                 </div>

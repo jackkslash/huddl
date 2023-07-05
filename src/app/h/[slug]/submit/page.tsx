@@ -35,7 +35,7 @@ const page = async ({ params }: pageProps) => {
             </div>
             <Editor huddlId={huddl.id} />
             <div className='flex justify-end w-full'>
-                <Button type="submit" className="w-full" form="huddl-post-form" />
+                <Button type="submit" className="w-full rounded" form="huddl-post-form">Post</Button>
             </div>
         </div>
     )

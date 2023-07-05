@@ -37,11 +37,6 @@ const CreatePost: FC<CreatePostProps> = ({ session }) => {
                 <Button
                     className='rounded'
                     onClick={() => router.push(pathname + '/submit')}>
-                    <ImageIcon className='text-white' />
-                </Button>
-                <Button
-                    className='rounded'
-                    onClick={() => router.push(pathname + '/submit')}>
                     <Link2 className='text-white' />
                 </Button>
             </div>
