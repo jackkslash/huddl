@@ -1,6 +1,7 @@
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { huddlSubscriptionValidator } from "@/lib/validators/huddl";
+import { postValidator } from "@/lib/validators/post";
 import { z } from "zod";
 
 export async function POST(req: Request) {
@@ -12,9 +13,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { huddlId } = huddlSubscriptionValidator.parse(body);
+    const { huddlId, title, content } = postValidator.parse(body);
 
-    // check if user has already subscribed or not
+    // check if user has already subscribed to subreddit
     const subscriptionExists = await db.subscription.findFirst({
       where: {
         huddlId,
@@ -23,17 +24,18 @@ export async function POST(req: Request) {
     });
 
     if (!subscriptionExists) {
-      return new Response("You've not been subscribed to this huddl, yet.", {
+      return new Response("Subcribe to post", {
         status: 400,
       });
     }
 
-    await db.subscription.delete({
-      where: {
-        userId_huddlId: {
-          huddlId,
-          userId: session.user.id,
-        },
+    // create subreddit and associate it with the user
+    await db.post.create({
+      data: {
+        title,
+        content,
+        authorId: session.user.id,
+        huddlId,
       },
     });
 
@@ -45,7 +47,7 @@ export async function POST(req: Request) {
     }
 
     return new Response(
-      "Could not unsubscribe from huddl at this time. Please try later",
+      "Could not subscribe to subreddit at this time. Please try later",
       { status: 500 }
     );
   }

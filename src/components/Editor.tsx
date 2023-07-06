@@ -1,11 +1,15 @@
 'use client'
-import { postValidator } from '@/lib/validators/post';
+import { postCreationRequest, postValidator } from '@/lib/validators/post';
 import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type EditorJS from '@editorjs/editorjs';
+import { toast } from '@/hooks/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { usePathname, useRouter } from 'next/navigation';
 interface EditorProps {
     huddlId: string
 }
@@ -28,6 +32,9 @@ export const Editor: FC<EditorProps> = ({ huddlId }) => {
 
     const ref = useRef<EditorJS>()
     const [isMounted, setMounted] = useState<boolean>(false)
+    const _titleRef = useRef<HTMLTextAreaElement>(null)
+    const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -72,26 +79,92 @@ export const Editor: FC<EditorProps> = ({ huddlId }) => {
         }
     }, [])
 
-
+    useEffect(() => {
+        if (Object.keys(errors).length) {
+            for (const [_key, value] of Object.entries(errors)) {
+                toast({
+                    title: "Something has gone wrong",
+                    description: (value as { message: string }).message,
+                    variant: "destructive"
+                })
+            }
+        }
+    }, [errors])
     useEffect(() => {
         const init = async () => {
             await initializeEditor()
             setTimeout(() => {
-
-            })
+                _titleRef.current?.focus()
+            }, 0)
         }
         if (isMounted) {
             init()
 
             return () => {
+                ref.current?.destroy()
+                ref.current = undefined
             }
         }
     }, [isMounted, initializeEditor])
 
+
+    const { mutate: createPost } = useMutation({
+        mutationFn: async ({ title, content, huddlId }: postCreationRequest) => {
+            const payload: postCreationRequest = {
+                title,
+                content,
+                huddlId
+            }
+            const { data } = await axios.post('/api/huddl/post/create', payload)
+            return data
+        },
+        onError: () => {
+            return toast({
+                title: 'Something went wrong',
+                description: 'Your post was not created, try again later',
+                variant: 'destructive'
+            })
+        },
+        onSuccess: () => {
+            const newPathname = pathname.split('/').slice(0, -1).join('/')
+            router.push(newPathname)
+            router.refresh()
+
+            return toast({
+                description: 'Post was created.'
+            })
+        }
+    })
+
+    async function onSubmit(data: postCreationRequest) {
+        const blocks = await ref.current?.save()
+
+
+        const payload: postCreationRequest = {
+            title: data.title,
+            content: blocks,
+            huddlId
+        }
+
+        createPost(payload)
+    }
+
+
+    if (!isMounted) {
+        return null
+    }
+    const { ref: titleRef, ...rest } = register('title')
     return (
         <div className='w-full p-4 bg-white border rounded-lg border-zinc-200'>
-            <form className='w-fit' id="huddl-post-form" onSubmit={() => { }}>
-                <TextareaAutosize placeholder='title' className='w-full overflow-hidden text-5xl font-bold text-black bg-transparent appearance-none resize-none focus:outline-none' />
+            <form className='w-fit' id="huddl-post-form" onSubmit={handleSubmit(onSubmit)}>
+                <TextareaAutosize ref={(e => {
+                    titleRef(e)
+                    //@ts-ignore
+                    _titleRef.current = e
+                })}
+                    {...rest}
+                    placeholder='title'
+                    className='w-full overflow-hidden text-5xl font-bold text-black bg-transparent appearance-none resize-none focus:outline-none' />
             </form>
             <div id='editor' className='text-black -pb-12' />
         </div>
