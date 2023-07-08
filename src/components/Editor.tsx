@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { usePathname, useRouter } from 'next/navigation';
+import { uploadFiles } from '@/lib/uploadthing';
 interface EditorProps {
     huddlId: string
 }
@@ -51,6 +52,7 @@ export const Editor: FC<EditorProps> = ({ huddlId }) => {
         const Code = (await import('@editorjs/code')).default
         const LinkTool = (await import('@editorjs/link')).default
         const InlineCode = (await import('@editorjs/inline-code')).default
+        const ImageTool = (await import('@editorjs/image')).default
 
         if (!ref.current) {
             const editor = new EditorJS({
@@ -67,6 +69,25 @@ export const Editor: FC<EditorProps> = ({ huddlId }) => {
                         class: LinkTool,
                         config: {
                             endpoint: '/api/link',
+                        },
+                    },
+                    image: {
+                        class: ImageTool,
+                        config: {
+                            uploader: {
+                                async uploadByFile(file: File) {
+                                    // upload to uploadthing
+                                    //@ts-ignore
+                                    const [res] = await uploadFiles([file], 'imageUploader')
+
+                                    return {
+                                        success: 1,
+                                        file: {
+                                            url: res.fileUrl,
+                                        },
+                                    }
+                                },
+                            },
                         },
                     },
                     list: List,
