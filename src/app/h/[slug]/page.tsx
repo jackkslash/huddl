@@ -1,4 +1,6 @@
 import CreatePost from '@/components/CreatePost'
+import PostFeed from '@/components/PostFeed'
+import { INFINITE_SCROLL_PAGINATION_RESULTS } from '@/config'
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
@@ -27,7 +29,7 @@ const page = async ({ params }: pageProps) => {
                 orderBy: {
                     createdAt: 'desc'
                 },
-                take: 2
+                take: INFINITE_SCROLL_PAGINATION_RESULTS
             }
         }
     })
@@ -40,6 +42,8 @@ const page = async ({ params }: pageProps) => {
             {session?.user ? (
                 <CreatePost session={session}></CreatePost>
             ) : <div>Sign in to submit a post.</div>}
+
+            <PostFeed initialPosts={huddl.posts} huddlName={huddl.name} />
         </div>)
 }
 

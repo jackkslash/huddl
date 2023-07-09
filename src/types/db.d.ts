@@ -1,7 +1,8 @@
-declare module "@editorjs/embed";
-declare module "@editorjs/table";
-declare module "@editorjs/list";
-declare module "@editorjs/code";
-declare module "@editorjs/link";
-declare module "@editorjs/inline-code";
-declare module "@editorjs/image";
+import type { Post, Huddl, User, Vote, Comment } from "@prisma/client";
+
+export type ExtendedPost = Post & {
+  huddl: Huddl;
+  votes: Vote[];
+  author: User;
+  comments: Comment[];
+};
