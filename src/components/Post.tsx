@@ -31,7 +31,7 @@ const Post: FC<PostProps> = ({
     const pRef = useRef<HTMLParagraphElement>(null)
 
     return (
-        <div className='bg-white rounded-md shadow'>
+        <div className='bg-white rounded-md shadow '>
             <div className='flex justify-between px-6 py-4'>
                 <PostVoteClient
                     postId={post.id}
@@ -44,8 +44,8 @@ const Post: FC<PostProps> = ({
                             <>
                                 <a
                                     className='text-sm underline text-zinc-900 underline-offset-2'
-                                    href={`/r/${huddlName}`}>
-                                    r/{huddlName}
+                                    href={`/h/${huddlName}`}>
+                                    h/{huddlName}
                                 </a>
                                 <span className='px-1'>•</span>
                             </>
