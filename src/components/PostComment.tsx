@@ -15,6 +15,7 @@ import { Button } from './ui/button'
 import { CommentRequest } from '@/lib/validators/comment'
 import { useOnClickOutside } from '@/hooks/use-on-click-outside'
 import { Textarea } from './ui/textarea'
+import CommentVotes from './CommentVotes'
 
 type ExtendedComment = Comment & {
     votes: CommentVote[]
@@ -89,6 +90,11 @@ const PostComment: FC<PostCommentProps> = ({
             <p className='mt-2 text-sm text-zinc-900'>{comment.text}</p>
 
             <div className='flex items-center gap-2'>
+                <CommentVotes
+                    commentId={comment.id}
+                    votesAmt={votesAmt}
+                    currentVote={currentVote}
+                />
                 <Button
                     onClick={() => {
                         if (!session) return router.push('/sign-in')
