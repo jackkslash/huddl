@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { buttonVariants } from './ui/button'
 import { getAuthSession } from '@/lib/auth'
 import UserAccountNav from './UserAccountNav';
+import SearchBar from '@/components/SearchBar'
 
 
 const Navbar = async () => {
@@ -16,6 +17,7 @@ const Navbar = async () => {
                 <Link href='/' className='flex items-center gap-2'>
                     <p className='text-sm font-medium text-slate-100'>Huddl</p>
                 </Link>
+                <SearchBar />
 
                 {session ?
                     (<UserAccountNav user={session.user} />)
